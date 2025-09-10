@@ -1,0 +1,174 @@
+/* The images are not equally spaced out in these codes: */
+/* 1) Load the nicer mono */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+
+/* Optional: a clean UI stack */
+:root{
+  --ui-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono-font: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+
+
+/* 2) Keep UI stable (nav, menus, footer) */
+.navigation,
+.navigation a,
+.navigation-title,
+.menu, .menu a,
+.footer, .footer a,
+.post-meta, .button {
+  font-family: var(--ui-font) !important;
+  letter-spacing: 0;
+  white-space: nowrap;              /* prevent wrapping that shifts layout */
+  line-height: 1.2;                 /* tighten if needed */
+  color: #C5A46D !important;
+}
+
+/* 3) Use monospace for content + hero */
+.post-content,
+h1, h2, h3, h4, h5, h6,
+.title, .post-title, .profile .title,
+.subtitle, .profile .subtitle,
+p, li, code, pre {
+  font-family: var(--mono-font) !important;
+  white-space: pre-line;            /* keep your manual line breaks */
+}
+
+
+/* 4) If menu still wraps on small screens, allow wrap only below 700px */
+@media (max-width: 700px){
+  .menu, .menu a { white-space: normal; }
+}
+
+/* Navigation: title on the left, menu on the right */
+.navigation .container { display: flex !important; align-items: center !important; }
+.navigation-title { margin-right: auto !important; }          /* pushes menu away */
+.menu { margin-left: auto !important; justify-content: flex-end !important; }
+
+/* Override avatar style */
+.avatar img {
+  width: 400px;         /* increase size (default ~120px) */
+  height: auto;         /* keep aspect ratio */
+  border-radius: 0;     /* remove oval/round cropping */
+  object-fit: contain;  /* no cropping */
+}
+
+/* Make newlines in the homepage author/info render as line breaks */
+.title { white-space: pre-line; }      /* author (big heading) */
+.subtitle { white-space: pre-line; }   /* info (subheading) */
+
+/* Make site container wider */
+.container {
+  max-width: 3000px !important;  /* default ~768px */
+  width: 95% !important;         /* responsive shrink on small screens */
+}
+
+/* Gallery grid: 3 columns, centered, evenly spaced */
+.post-content .gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;            /* equal spacing between images */
+  max-width: 1200px;    /* optional: cap gallery width */
+  margin: 0 auto;       /* center gallery within the page */
+  margin-top: 1em;
+}
+
+/* Reset wrappers and make images fill their grid cell */
+.post-content .gallery > * { margin: 0; }
+.post-content .gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;    /* or 'contain' if you don’t want crop */
+  border-radius: 8px;   /* optional */
+}
+
+/* Responsive breakpoints */
+@media (max-width: 900px){
+  .post-content .gallery { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px){
+  .post-content .gallery { grid-template-columns: 1fr; }
+}
+
+.post-content h3 .anchor {
+  display: none;
+}
+
+/* ----- FIX THE GAP ON PUBLICATIONS ----- */
+/* Stop converting newlines to breaks in page content */
+.post-content,
+.post-content h1, .post-content h2, .post-content h3,
+.post-content h4, .post-content h5, .post-content h6,
+.post-content p, .post-content ul, .post-content li {
+  white-space: normal !important;
+}
+
+/* (Keep multiline only where you need it — homepage hero) */
+.title, .subtitle { white-space: pre-line !important; }
+
+/* Tighter spacing for year headings */
+.post-content h3 { margin-top: 0.5rem !important; margin-bottom: 0.5rem !important; }
+
+/* Remove any extra top margin the UL adds after a year heading */
+.post-content h3 + ul { margin-top: 0 !important; }
+
+/* Optional: hide the little “link to heading” anchor on years */
+.post-content h3 .anchor,
+.post-content h3 .heading-anchor,
+.post-content h3 .headerlink {
+  display: none !important;
+}
+
+/* Make the whole header bigger, then pin menu link size */
+.navigation { font-size: 18px !important; }                 /* base size */
+.navigation .menu, .navigation nav, .navigation ul { font-size: 1em !important; }
+.navigation .menu a, .navigation nav a, .navigation ul a {
+  font-size: 1.3em !important;                              /* change this number */
+  font-weight: 600;                                         /* optional */
+  line-height: 1.2;
+}
+
+/* Optional: spacing between items */
+.navigation .menu li, .navigation nav li, .navigation ul li {
+  margin-left: 24px !important;
+}
+/* Increase site title size */
+.navigation .navigation-title,
+.navigation-title a {
+  font-size: 1.3em !important;   /* try 1.8–2.2 for balance with menu */
+  font-weight: 700;              /* bold */
+  line-height: 1.2;
+}
+
+
+
+
+/* Gradient candy text effect */
+.candy-text {
+  background: linear-gradient(90deg,
+    #ff5778,  /* pink */
+    #ffc976,  /* violet */
+    #4ade80,  /* mint green */
+    #facc15,  /* pastel yellow */
+    #fb923c   /* orange */
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;  /* fallback for browsers */
+  font-weight: bold;
+}
+
+.morandi-text {
+  background: linear-gradient(90deg,
+    #f9dad8,  /* dusty rose */
+    #e5a1a0,  /* sage green */
+    #eba1b0,  /* misty blue */
+    #e1768a,  /* warm beige */
+    #ca5669   /* pale lilac */
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}

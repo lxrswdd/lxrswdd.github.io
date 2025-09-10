@@ -1,0 +1,66 @@
+baseURL = "https://lxrswdd.github.io/"
+languageCode = "en-us"
+title = "Xiangrui Liu"
+theme = "hugo-coder"
+
+[params]
+  author ="""刘翔睿
+Xiangrui Liu"""
+
+  info ="""PhD Student, Arizona State University
+  
+Video Gen. Researcher, Photographer
+"""
+  description = "Personal site"
+  colorScheme = "dark"
+  customCSS = ["css/custom.css"]  
+  avatarURL = "images/avatar2.jpg" 
+  hideColorSchemeToggle = false
+
+# Menu
+[[menu.main]]
+  name = "About Me"
+  url  = "about/"
+  weight = 1
+
+[[menu.main]]
+  name = "Publications"
+  url  = "publication/"
+  weight = 2
+
+[[menu.main]]
+name = "Gallery"
+url  = "gallery/"
+weight = 4
+
+[[menu.main]]
+name = "Research Highlights"
+url  = "demo/"
+weight = 3
+
+# Social
+[[params.social]]
+  name = "Github"
+  icon = "fa fa-github fa-2x"  
+  weight = 2
+  url  = "https://github.com/lxrswdd"
+  target = "_blank"
+
+[[params.social]]
+  name = "Google Scholar"
+  icon = "fa fa-graduation-cap fa-2x"
+  weight = 1
+  url  = "https://scholar.google.com/citations?user=OdygdNUAAAAJ&hl=en"
+  target = "_blank"
+
+[[params.social]]
+  name = "LinkedIn"
+  icon = "fa-brands fa-linkedin fa-2x"
+  weight = 4
+  url = "https://www.linkedin.com/in/xiangrui-liu-364042125/"
+  target = "_blank"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
