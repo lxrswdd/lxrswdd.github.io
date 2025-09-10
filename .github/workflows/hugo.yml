@@ -1,29 +1,43 @@
-name: Deploy Hugo site to Pages
+name: Publish with Hugo to GitHub Pages
 
 on:
   push:
-    branches: ["main"]   # run on pushes to main branch
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
-          submodules: true   # fetch theme submodules
+          submodules: true       # pulls your theme if it's a submodule
           fetch-depth: 0
-
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
+      - uses: peaceiris/actions-hugo@v2
         with:
-          hugo-version: '0.134.0'   # replace with your Hugo version
-
+          hugo-version: '0.134.0' # match your local hugo version
       - name: Build
         run: hugo --minify
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          path: ./public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
