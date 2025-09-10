@@ -12,6 +12,8 @@ Welcome to my gallery!
   <img src="/images/gallery/woodpecker.jpg" alt="photo 4">
   <img src="/images/gallery/dear.jpg" alt="photo 5">
   <img src="/images/gallery/night_castle.jpg" alt="photo 6">
+  <img src="/images/gallery/flamingo.jpg" alt="photo 7">
+
 
 
 </div>
