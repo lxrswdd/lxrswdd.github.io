@@ -4,7 +4,7 @@ title = "Publications"
 
 ### 2025
 - <strong>Towards a Psychoanalytic Perspective on VLM Behaviour: A First-step Interpretation with Intriguing Observations.</strong>
-  <em>Xiangrui Liu, Man Luo, Agneet Chatterjee, Hua Wei, Yezhou Yang.</em> arXiv:2507.03123<br>
+  <em>Xiangrui Liu, Man Luo, Agneet Chatterjee, Hua Wei, Chitta Baral, Yezhou Yang.</em> arXiv:2507.03123<br>
 
 - <strong>[IJCAI 2025] Deepshade: Enable shade simulation by text-conditioned image generation.</strong>
 <em>Longchao Da*, Xiangrui Liu*, Mithun Shivakoti, Thirulogasankar Pranav Kutralingam, Yezhou Yang, Hua Wei.</em><br>
