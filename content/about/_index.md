@@ -20,7 +20,7 @@ title = 'About Me'
   <li style="color: #D8A7B1;font-size: 1.2em;">Long Video Editing</li>
   <li style="color:#f4a261;font-size: 1.2em;">Video Relighting</li>
   <li style="color: #f58994;font-size: 1.2em;">Video Generation</li>
-  <li style="color: #80BEAF;font-size: 1.2em;">AIGC Detection</li>
+  <li style="color: #80BEAF;font-size: 1.2em;">AIGC Forensics</li>
   <li style="color: #B3DDD1;font-size: 1.2em;">VLM Hallucination</li>
 </ul>
 </p>
