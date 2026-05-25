@@ -1,7 +1,13 @@
 {{ with .Site.Params.social }}
 <ul>
   {{ range sort . "weight" }}
-    {{ if .icon }}
+    {{ if .image }}
+      <li>
+        <a href="{{ .url | safeURL }}" aria-label="{{ .name }}" {{ if .rel }}rel="{{ .rel }}"{{ end }} {{ if .target }}target="{{ .target }}"{{ end }} {{ if .type }}type="{{ .type }}"{{ end }} {{ if .download }}download="{{ .download }}"{{ end }}>
+          <img class="social-image" src="{{ .image | safeURL }}" alt="{{ .name }}">
+        </a>
+      </li>
+    {{ else if .icon }}
       <li>
         <a href="{{ .url | safeURL }}" aria-label="{{ .name }}" {{ if .rel }}rel="{{ .rel }}"{{ end }} {{ if .target }}target="{{ .target }}"{{ end }} {{ if .type }}type="{{ .type }}"{{ end }} {{ if .download }}download="{{ .download }}"{{ end }}>
           <i class="{{ .icon }}" aria-hidden="true"></i>

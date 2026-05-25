@@ -53,6 +53,13 @@ p, li, code, pre {
   object-fit: contain;  /* no cropping */
 }
 
+.centered .about ul li a .social-image {
+  width: 3.2rem;
+  height: 3.2rem;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
 /* Make newlines in the homepage author/info render as line breaks */
 .title { white-space: pre-line; }      /* author (big heading) */
 .subtitle { white-space: pre-line; }   /* info (subheading) */
