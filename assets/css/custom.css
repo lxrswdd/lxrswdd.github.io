@@ -85,6 +85,11 @@ p, li, code, pre {
 /* Reset wrappers and keep each full image visible without cropping */
 .gallery > *,
 .post-content .gallery > * { margin: 0; }
+.gallery a,
+.post-content .gallery a {
+  display: block;
+  max-width: 100%;
+}
 .gallery img,
 .post-content .gallery img {
   display: block;
