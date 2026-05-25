@@ -60,6 +60,14 @@ weight = 3
   url = "https://www.linkedin.com/in/xiangrui-liu-364042125/"
   target = "_blank"
 
+[[params.social]]
+  name = "Resume"
+  icon = "fa-solid fa-file-arrow-down fa-2x"
+  weight = 5
+  url = "/Resume_Xiangrui.pdf"
+  type = "application/pdf"
+  download = "Resume_Xiangrui.pdf"
+
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
