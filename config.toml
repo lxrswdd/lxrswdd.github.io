@@ -61,8 +61,7 @@ weight = 3
   target = "_blank"
 
 [[params.social]]
-  name = "Resume"
-  icon = "fa-solid fa-file-arrow-down fa-2x"
+  name = "CV"
   weight = 5
   url = "/Resume_Xiangrui.pdf"
   type = "application/pdf"

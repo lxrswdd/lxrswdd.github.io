@@ -9,7 +9,7 @@
       </li>
     {{ else }}
       <li>
-        <a href="{{ .url | safeURL }}" aria-label="{{ .name }}" {{ if .rel }}rel="{{ .rel }}"{{ end }} {{ if .target }}target="{{ .target }}"{{ end }}>{{ .name }}</a>
+        <a href="{{ .url | safeURL }}" aria-label="{{ .name }}" {{ if .rel }}rel="{{ .rel }}"{{ end }} {{ if .target }}target="{{ .target }}"{{ end }} {{ if .type }}type="{{ .type }}"{{ end }} {{ if .download }}download="{{ .download }}"{{ end }}>{{ .name }}</a>
       </li>
     {{ end }}
   {{ end }}
