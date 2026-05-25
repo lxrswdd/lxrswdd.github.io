@@ -2,12 +2,25 @@
 title = "Publications"
 +++
 
+### 2026
+- <strong>[CVPR 2026] Hi-Light: A Path to high-fidelity, high-resolution video relighting with a Novel Evaluation Paradigm.</strong>
+<em>Xiangrui Liu, Haoxiang Li, Yezhou Yang.</em><br>
+---
+
 ### 2025
 - <strong>Towards a Psychoanalytic Perspective on VLM Behaviour: A First-step Interpretation with Intriguing Observations.</strong>
   <em>Xiangrui Liu, Man Luo, Agneet Chatterjee, Hua Wei, Chitta Baral, Yezhou Yang.</em> arXiv:2507.03123<br>
 
 - <strong>[IJCAI 2025] Deepshade: Enable shade simulation by text-conditioned image generation.</strong>
 <em>Longchao Da*, Xiangrui Liu*, Mithun Shivakoti, Thirulogasankar Pranav Kutralingam, Yezhou Yang, Hua Wei.</em><br>
+
+- <strong>[NeurIPS 2025] ShadeBench: A Benchmark Dataset and Method for Shade Simulation in Sustainable Society.</strong>
+<em>Longchao Da*, Xiangrui Liu*, Mithun Shivakoti, Thirulogasankar Pranav Kutralingam, Yezhou Yang, Hua Wei.</em><br>
+
+- <strong>[Arxiv] Foundation Model in Biomedicine.</strong>
+<em>Xiangrui Liu, Yuanyuan Zhang, Yingzhou Lu, Changchang Yin, Xiaoling Hu, Xiaoou Liu, Lulu Chen, Sheng Wang, Alexander Rodriguez, Huaxiu Yao, Yezhou Yang, Ping Zhang, Jintai Chen, Tianfan Fu, Xiao Wang.</em><br>
+
+
 ---
 ### 2024
 - <p>
