@@ -3,7 +3,7 @@ title = "Publications"
 +++
 
 ### 2026
-- <strong>[CVPR 2026] Hi-Light: A Path to high-fidelity, high-resolution video relighting with a Novel Evaluation Paradigm.</strong>
+- <strong>[CVPR 2026] Hi-Light: A Path to high-fidelity, high-resolution video relighting with a Novel Evaluation Paradigm.</strong><br>
   <em>Xiangrui Liu, Haoxiang Li, Yezhou Yang.</em><br>
 ---
 

@@ -70,32 +70,31 @@ p, li, code, pre {
   width: 95% !important;         /* responsive shrink on small screens */
 }
 
-/* Gallery grid: 3 columns, centered, evenly spaced */
+/* Gallery: one full image per row, sized to fit a laptop viewport */
+.gallery,
 .post-content .gallery {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;            /* equal spacing between images */
-  max-width: 1200px;    /* optional: cap gallery width */
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  max-width: 1200px;
   margin: 0 auto;       /* center gallery within the page */
   margin-top: 1em;
+  justify-items: center;
 }
 
-/* Reset wrappers and make images fill their grid cell */
+/* Reset wrappers and keep each full image visible without cropping */
+.gallery > *,
 .post-content .gallery > * { margin: 0; }
+.gallery img,
 .post-content .gallery img {
   display: block;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   height: auto;
-  object-fit: cover;    /* or 'contain' if you don’t want crop */
+  max-height: calc(100vh - 180px);
+  margin: 0 auto;
+  object-fit: contain;
   border-radius: 8px;   /* optional */
-}
-
-/* Responsive breakpoints */
-@media (max-width: 900px){
-  .post-content .gallery { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 600px){
-  .post-content .gallery { grid-template-columns: 1fr; }
 }
 
 .post-content h3 .anchor {
