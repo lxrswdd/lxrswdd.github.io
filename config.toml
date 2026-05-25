@@ -62,7 +62,7 @@ weight = 3
 
 [[params.social]]
   name = "CV"
-  image = "/img/cv_logo.png"
+  image = "/img/cv_logo_white_bg.png"
   weight = 5
   url = "/Resume_Xiangrui.pdf"
   type = "application/pdf"
