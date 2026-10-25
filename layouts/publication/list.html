@@ -1,0 +1,7 @@
+{{ define "title" }}{{ .Title }} · {{ .Site.Title }}{{ end }}
+
+{{ define "content" }}
+  <div class="publication-page">
+    {{ partial "list.html" . }}
+  </div>
+{{ end }}

@@ -164,6 +164,28 @@ p, li, code, pre {
 }
 
 /* ----- FIX THE GAP ON PUBLICATIONS ----- */
+.publication-page h3,
+.publication-page li,
+.publication-page p {
+  white-space: normal;
+}
+
+.publication-page .list ul:not(.pagination) li {
+  display: block;
+  margin-bottom: 1.8rem;
+}
+
+.publication-page li p {
+  margin: 0;
+}
+
+.publication-authors {
+  display: block;
+  font-size: 0.85em;
+  line-height: 1.5;
+  white-space: normal;
+}
+
 /* Stop converting newlines to breaks in page content */
 .post-content,
 .post-content h1, .post-content h2, .post-content h3,
