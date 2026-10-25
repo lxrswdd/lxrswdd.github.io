@@ -93,6 +93,66 @@ p, li, code, pre {
   margin-left: 0;
 }
 
+.home-music {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  color: #C5A46D;
+  font-size: 1.5rem;
+}
+
+.music-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 3.6rem;
+  width: 3.6rem;
+  height: 3.6rem;
+  padding: 0;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.music-toggle:hover {
+  background: rgba(197, 164, 109, 0.12);
+}
+
+.music-toggle:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.music-toggle:focus-visible,
+.music-volume:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.music-track {
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.music-volume {
+  flex: 0 1 9rem;
+  width: 9rem;
+  min-width: 5rem;
+  accent-color: #C5A46D;
+  cursor: pointer;
+}
+
+.music-error {
+  flex-basis: 100%;
+  font-size: 1.3rem;
+}
+
 @media (max-width: 768px) {
   .centered .home-profile {
     grid-template-columns: minmax(0, 1fr);
@@ -107,6 +167,10 @@ p, li, code, pre {
 
   .centered .home-profile ul li:first-child a {
     margin-left: 1rem;
+  }
+
+  .home-music {
+    justify-content: center;
   }
 }
 
