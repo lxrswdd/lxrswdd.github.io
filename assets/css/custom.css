@@ -53,6 +53,63 @@ p, li, code, pre {
   object-fit: contain;  /* no cropping */
 }
 
+.centered .home-profile {
+  display: grid;
+  grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+  align-items: center;
+  gap: 6rem;
+  width: 100%;
+  max-width: 1100px;
+  text-align: left;
+  padding: 3rem 0;
+}
+
+.home-profile .avatar img {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+}
+
+.home-profile-details {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.centered .home-profile h1 {
+  margin-top: 0;
+}
+
+.centered .home-profile h2,
+.centered .home-profile h2 p,
+.centered .home-profile ul {
+  white-space: normal;
+}
+
+.centered .home-profile h2 p {
+  margin: 0 0 1.5rem;
+}
+
+.centered .home-profile ul li:first-child a {
+  margin-left: 0;
+}
+
+@media (max-width: 768px) {
+  .centered .home-profile {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 3rem;
+    text-align: center;
+  }
+
+  .home-profile .avatar {
+    width: min(100%, 320px);
+  }
+
+  .centered .home-profile ul li:first-child a {
+    margin-left: 1rem;
+  }
+}
+
 .centered .about ul li a .social-image {
   width: 3.2rem;
   height: 3.2rem;
