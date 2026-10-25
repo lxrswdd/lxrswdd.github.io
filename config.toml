@@ -17,6 +17,9 @@ AI Researcher & Photographer
   avatarURL = "images/avatar-8149.jpg"
   hideColorSchemeToggle = false
 
+[params.goatCounter]
+  code = "lxrswdd"
+
 # Menu
 [[menu.main]]
   name = "About Me"
