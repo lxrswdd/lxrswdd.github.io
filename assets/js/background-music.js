@@ -81,11 +81,17 @@
   }
 
   audio.addEventListener("loadedmetadata", seekToStart);
+  for (const event of ["pause", "waiting", "seeking", "ended", "error"]) {
+    audio.addEventListener(event, () => player.classList.remove("is-playing"));
+  }
   audio.addEventListener("play", () => {
     audio.volume = 0;
     updateToggle();
   });
-  audio.addEventListener("playing", fadeIn);
+  audio.addEventListener("playing", () => {
+    player.classList.add("is-playing");
+    fadeIn();
+  });
   audio.addEventListener("pause", () => {
     stopFade();
     updateToggle();

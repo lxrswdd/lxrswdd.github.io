@@ -103,6 +103,52 @@ p, li, code, pre {
   font-size: 1.5rem;
 }
 
+.music-disc {
+  position: relative;
+  display: block;
+  flex: 0 0 4.2rem;
+  width: 4.2rem;
+  height: 4.2rem;
+  border: 1px solid #C5A46D;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, #111 0 2px, #303030 2px 3px);
+  animation: music-disc-spin 4s linear infinite;
+  animation-play-state: paused;
+}
+
+.music-disc::before {
+  content: "";
+  position: absolute;
+  inset: 30%;
+  border: 1px solid #e2ca9d;
+  border-radius: 50%;
+  background: #C5A46D;
+}
+
+.music-disc::after {
+  content: "";
+  position: absolute;
+  top: 44%;
+  left: 44%;
+  width: 12%;
+  height: 12%;
+  border-radius: 50%;
+  background: #111;
+  box-shadow: 0 -1.4rem 0 -1px #C5A46D;
+}
+
+.home-music.is-playing .music-disc {
+  animation-play-state: running;
+}
+
+@keyframes music-disc-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .music-disc { animation: none; }
+}
+
 .music-toggle {
   display: inline-flex;
   align-items: center;
