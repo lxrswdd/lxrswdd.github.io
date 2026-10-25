@@ -46,6 +46,16 @@ p, li, code, pre {
 .menu { margin-left: auto !important; justify-content: flex-end !important; }
 
 /* Override avatar style */
+body.colorscheme-dark:has(.home-profile) {
+  background-color: #16151D;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.colorscheme-auto:has(.home-profile) {
+    background-color: #16151D;
+  }
+}
+
 .avatar img {
   width: 400px;         /* increase size (default ~120px) */
   height: auto;         /* keep aspect ratio */
@@ -77,6 +87,10 @@ p, li, code, pre {
 
 .centered .home-profile h1 {
   margin-top: 0;
+}
+
+.centered .home-profile h2 {
+  font-size: 1.8rem;
 }
 
 .centered .home-profile h2,
