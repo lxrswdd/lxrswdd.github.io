@@ -1,6 +1,16 @@
 /* The images are not equally spaced out in these codes: */
 /* 1) Load the nicer mono */
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@600&family=Oxanium:wght@600&family=Space+Grotesk:wght@500&display=swap');
+
+@font-face {
+  font-family: "Baige Tianxing";
+  src: url('/fonts/baige-tianxing-name.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  unicode-range: U+5218, U+777F, U+7FD4;
+}
 
 /* Optional: a clean UI stack */
 :root{
@@ -126,10 +136,18 @@ body.colorscheme-dark:has(.home-profile) {
 
 .centered .home-profile h1 {
   margin-top: 0;
+  font-family: "Baige Tianxing", "Oxanium", "Noto Sans SC", sans-serif !important;
+  font-weight: 600;
 }
 
 .centered .home-profile h2 {
   font-size: 1.8rem;
+}
+
+.centered .home-profile h2,
+.centered .home-profile h2 p {
+  font-family: "Space Grotesk", "Noto Sans SC", sans-serif !important;
+  font-weight: 500;
 }
 
 .centered .home-profile h2,

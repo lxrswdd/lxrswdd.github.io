@@ -1,6 +1,9 @@
 (() => {
   const canvas = document.querySelector("[data-home-meteors]");
   if (!canvas) return;
+  const portrait = document.querySelector(".home-profile .avatar");
+  const text = document.querySelector(".home-profile [data-particle-text]");
+  if (!portrait || !text) return;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -58,21 +61,59 @@
     if (meteors.length) frame = requestAnimationFrame(animate);
   }
 
+  function createMeteor() {
+    const photo = portrait.getBoundingClientRect();
+    const range = document.createRange();
+    const lines = Array.from(text.querySelectorAll("h1, p"), element => {
+      range.selectNodeContents(element);
+      return range.getBoundingClientRect();
+    });
+    const words = lines.length ? {
+      left: Math.min(...lines.map(line => line.left)),
+      right: Math.max(...lines.map(line => line.right)),
+      top: Math.min(...lines.map(line => line.top)),
+      bottom: Math.max(...lines.map(line => line.bottom)),
+    } : text.getBoundingClientRect();
+    const regions = [
+      { left: photo.left, right: photo.right + 40, top: photo.top - 70, bottom: photo.top + 10 },
+      { left: photo.left - 70, right: photo.left - 10, top: photo.top, bottom: photo.bottom },
+      { left: photo.right + 10, right: photo.right + 80, top: photo.top, bottom: photo.bottom },
+      { left: words.left - 35, right: words.right + 60, top: words.top - 60, bottom: words.bottom + 65 },
+    ].map(region => ({
+      left: Math.max(16, region.left),
+      right: Math.min(width - 16, region.right),
+      top: Math.max(16, region.top),
+      bottom: Math.min(height - 16, region.bottom),
+    })).filter(region => region.right > region.left && region.bottom > region.top);
+    if (!regions.length) return null;
+
+    const region = regions[Math.floor(Math.random() * regions.length)];
+    const targetX = region.left + Math.random() * (region.right - region.left);
+    const targetY = region.top + Math.random() * (region.bottom - region.top);
+    const vx = -160 - Math.random() * 70;
+    const vy = 180 + Math.random() * 60;
+    const life = 1500 + Math.random() * 500;
+    // The brightest part of each path passes close to the profile, not the viewport edge.
+    return {
+      x: targetX - vx * life / 2000,
+      y: targetY - vy * life / 2000,
+      vx, vy,
+      length: 110 + Math.random() * 80,
+      life,
+      born: performance.now(),
+    };
+  }
+
   function schedule(delay) {
     timer = setTimeout(() => {
       timer = null;
       if (!enabled()) return;
       if (meteors.length < 2) {
-        meteors.push({
-          x: width * (0.3 + Math.random() * 0.8),
-          y: height * Math.random() * 0.25,
-          vx: -160 - Math.random() * 70,
-          vy: 180 + Math.random() * 60,
-          length: 110 + Math.random() * 80,
-          life: 1500 + Math.random() * 500,
-          born: performance.now(),
-        });
-        if (frame === null) frame = requestAnimationFrame(animate);
+        const meteor = createMeteor();
+        if (meteor) {
+          meteors.push(meteor);
+          if (frame === null) frame = requestAnimationFrame(animate);
+        }
       }
       schedule(2000 + Math.random() * 1000);
     }, delay);
