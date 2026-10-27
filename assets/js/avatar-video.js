@@ -7,6 +7,7 @@
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const photoDuration = 1500;
   const flickerDuration = 650;
+  const pauseDuration = 500;
   const revealDuration = 1250;
   const flickerLevels = [1, 0.16, 0.85, 0.08, 0.6, 0];
   const flickerOffsets = [0, -2, 1, 0, -1, 0];
@@ -79,10 +80,15 @@
     }
     if (stage === "flicker") {
       if (elapsed >= flickerDuration) {
-        beginReveal();
-        return;
+        elapsed = 0;
+        setStage("pause");
+      } else {
+        updateFlicker();
       }
-      updateFlicker();
+    }
+    if (stage === "pause" && elapsed >= pauseDuration) {
+      beginReveal();
+      return;
     }
     if (stage === "reveal") {
       const progress = Math.min(elapsed / revealDuration, 1);

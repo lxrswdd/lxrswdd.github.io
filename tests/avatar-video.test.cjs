@@ -72,7 +72,7 @@ function setup({ reduced = false, loaded = true, rejectPlay = false } = {}) {
   };
 }
 
-test('holds the photo for 1.5 seconds, flickers for 650 ms, then reveals video top to bottom', () => {
+test('holds the photo for 1.5 seconds, flickers, pauses for 500 ms, then reveals video', () => {
   const h = setup();
   h.advance(1499);
   assert.equal(h.avatar.dataset.avatarStage, 'photo');
@@ -80,6 +80,11 @@ test('holds the photo for 1.5 seconds, flickers for 650 ms, then reveals video t
   h.advance(1);
   assert.equal(h.avatar.dataset.avatarStage, 'flicker');
   h.advance(649);
+  assert.equal(h.video.plays, 0);
+  h.advance(1);
+  assert.equal(h.avatar.dataset.avatarStage, 'pause');
+  h.advance(499);
+  assert.equal(h.avatar.dataset.avatarStage, 'pause');
   assert.equal(h.video.plays, 0);
   h.advance(1);
   assert.equal(h.avatar.dataset.avatarStage, 'reveal');
@@ -138,6 +143,12 @@ test('background tabs pause the intro clock and resume without restarting it', (
   h.advance(10000);
   h.hide(false);
   h.advance(350);
+  assert.equal(h.avatar.dataset.avatarStage, 'pause');
+  h.advance(200);
+  h.hide(true);
+  h.advance(10000);
+  h.hide(false);
+  h.advance(300);
   assert.equal(h.avatar.dataset.avatarStage, 'reveal');
   h.tick(0);
   h.advance(400);
@@ -150,7 +161,7 @@ test('background tabs pause the intro clock and resume without restarting it', (
 
 test('video visibility changes never repeat flickering or the reveal', () => {
   const h = setup();
-  h.advance(3500);
+  h.advance(4000);
   h.hide(true);
   assert.equal(h.avatar.dataset.avatarStage, 'still');
   h.hide(false);
@@ -181,11 +192,11 @@ test('reduced motion skips flickering, the reveal, and video playback', () => {
 test('source errors and blocked autoplay fall back to the ASCII still', async () => {
   const failed = setup();
   failed.sourceEvents.error();
-  failed.advance(3500);
+  failed.advance(4000);
   assert.equal(failed.avatar.dataset.avatarStage, 'still');
   assert.equal(failed.video.plays, 0);
   const blocked = setup({ rejectPlay: true });
-  blocked.advance(3500);
+  blocked.advance(4000);
   await Promise.resolve();
   assert.equal(blocked.avatar.dataset.avatarStage, 'still');
   assert(!blocked.classes.has('is-playing'));
