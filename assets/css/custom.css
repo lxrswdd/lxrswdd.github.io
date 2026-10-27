@@ -105,6 +105,57 @@ body.colorscheme-dark:has(.home-profile) {
   overflow-wrap: break-word;
 }
 
+.home-constellation {
+  display: block;
+  width: min(100%, 32rem);
+  height: auto;
+  aspect-ratio: 5 / 2;
+  margin: 0 0 1.6rem;
+  overflow: visible;
+  color: #59616d;
+  pointer-events: none;
+}
+
+.constellation-stars {
+  fill: currentColor;
+  filter: drop-shadow(0 0 2px currentColor);
+}
+
+.constellation-polaris {
+  fill: currentColor;
+  filter: drop-shadow(0 0 4px currentColor);
+  animation: polaris-twinkle 4.8s ease-in-out infinite;
+}
+
+body.colorscheme-dark .home-constellation {
+  color: #e7eaf1;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.colorscheme-auto .home-constellation {
+    color: #e7eaf1;
+  }
+}
+
+@keyframes polaris-twinkle {
+  0%, 100% {
+    opacity: 0.18;
+    filter: brightness(0.6) drop-shadow(0 0 1px currentColor);
+  }
+  45% {
+    opacity: 1;
+    filter: brightness(1.8) drop-shadow(0 0 7px currentColor);
+  }
+  65% {
+    opacity: 0.55;
+    filter: brightness(1) drop-shadow(0 0 3px currentColor);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .constellation-polaris { animation: none; }
+}
+
 .particle-text {
   position: relative;
   isolation: isolate;
@@ -324,6 +375,10 @@ body.colorscheme-dark:has(.home-profile) {
 
   .home-profile .avatar {
     width: min(100%, 320px);
+  }
+
+  .home-constellation {
+    margin-inline: auto;
   }
 
   .centered .home-profile ul li:first-child a {

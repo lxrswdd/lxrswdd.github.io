@@ -1,0 +1,68 @@
+<svg class="home-constellation" viewBox="0 0 300 120" role="img" aria-label="Big Dipper and Polaris">
+  <defs>
+    <linearGradient id="home-polaris-ray-fade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="-20">
+      <stop offset="0" stop-color="currentColor" />
+      <stop offset="0.15" stop-color="currentColor" stop-opacity="0.9" />
+      <stop offset="0.55" stop-color="currentColor" stop-opacity="0.25" />
+      <stop offset="1" stop-color="currentColor" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="home-polaris-core-glow">
+      <stop offset="0" stop-color="currentColor" stop-opacity="0.9" />
+      <stop offset="0.25" stop-color="currentColor" stop-opacity="0.45" />
+      <stop offset="0.6" stop-color="currentColor" stop-opacity="0.1" />
+      <stop offset="1" stop-color="currentColor" stop-opacity="0" />
+    </radialGradient>
+    <path id="home-polaris-ray" d="M-0.9 0 Q-0.35 -4 0 -20 Q0.35 -4 0.9 0Z" fill="url(#home-polaris-ray-fade)" />
+    <g id="home-star-cross">
+      <use href="#home-polaris-ray" />
+      <use href="#home-polaris-ray" transform="rotate(180)" />
+      <use href="#home-polaris-ray" transform="rotate(90) scale(0.8)" />
+      <use href="#home-polaris-ray" transform="rotate(270) scale(0.8)" />
+    </g>
+    <g id="home-star-rays">
+      <use href="#home-star-cross" />
+      <use href="#home-polaris-ray" transform="rotate(45) scale(0.8 0.55)" opacity="0.8" />
+      <use href="#home-polaris-ray" transform="rotate(135) scale(0.8 0.55)" opacity="0.8" />
+      <use href="#home-polaris-ray" transform="rotate(225) scale(0.8 0.55)" opacity="0.8" />
+      <use href="#home-polaris-ray" transform="rotate(315) scale(0.8 0.55)" opacity="0.8" />
+    </g>
+  </defs>
+  <g class="constellation-stars">
+    <g class="constellation-fixed-star" transform="translate(22 27)">
+      <use href="#home-star-cross" transform="scale(0.4)" />
+      <circle r="1.25" />
+    </g>
+    <g class="constellation-fixed-star" transform="translate(51 45)">
+      <circle r="5.5" fill="url(#home-polaris-core-glow)" />
+      <use href="#home-star-rays" transform="scale(0.65)" />
+      <circle r="1.65" />
+    </g>
+    <g class="constellation-fixed-star" transform="translate(85 50)">
+      <use href="#home-star-cross" transform="scale(0.46)" />
+      <circle r="1.3" />
+    </g>
+    <g class="constellation-fixed-star" transform="translate(123 63)">
+      <use href="#home-star-cross" transform="scale(0.55)" />
+      <circle r="1.25" />
+    </g>
+    <g class="constellation-fixed-star" transform="translate(105 76)">
+      <use href="#home-star-cross" transform="scale(0.58)" />
+      <circle r="1.5" />
+    </g>
+    <g class="constellation-fixed-star" transform="translate(128 94)">
+      <use href="#home-star-cross" transform="scale(0.42)" />
+      <circle r="1.3" />
+    </g>
+    <g class="constellation-fixed-star" transform="translate(149 84)">
+      <circle r="6.5" fill="url(#home-polaris-core-glow)" />
+      <use href="#home-star-rays" transform="scale(0.75)" />
+      <circle r="1.8" />
+    </g>
+  </g>
+{{/* The bowl's pointer stars lead from Merak through Dubhe toward Polaris. */}}
+  <g class="constellation-polaris" transform="translate(254 34)">
+    <circle r="7" fill="url(#home-polaris-core-glow)" />
+    <use href="#home-star-rays" />
+    <circle r="1.7" />
+  </g>
+</svg>

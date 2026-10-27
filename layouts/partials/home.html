@@ -4,6 +4,7 @@
     {{ partialCached "home/avatar.html" . }}
 
     <div class="home-profile-details">
+      {{ partial "home/constellation.html" . }}
       {{ partialCached "home/author.html" . }}
       {{ partialCached "home/social.html" . }}
       {{ partial "home/music.html" . }}
