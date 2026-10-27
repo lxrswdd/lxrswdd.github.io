@@ -46,6 +46,10 @@ p, li, code, pre {
 .menu { margin-left: auto !important; justify-content: flex-end !important; }
 
 /* Override avatar style */
+body:has(.home-profile) {
+  isolation: isolate;
+}
+
 body.colorscheme-dark:has(.home-profile) {
   background-color: #16151D;
 }
@@ -83,6 +87,41 @@ body.colorscheme-dark:has(.home-profile) {
 .home-profile-details {
   min-width: 0;
   overflow-wrap: break-word;
+}
+
+.particle-text {
+  position: relative;
+  isolation: isolate;
+}
+
+.particle-text-source {
+  display: flow-root;
+}
+
+.particle-text.is-ready .particle-text-source {
+  opacity: 0;
+}
+
+.particle-text-canvas {
+  position: absolute;
+  top: -24px;
+  left: -24px;
+  width: calc(100% + 48px);
+  height: calc(100% + 48px);
+  pointer-events: none;
+}
+
+.home-meteors {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-meteors { display: none; }
 }
 
 .centered .home-profile h1 {
@@ -214,6 +253,31 @@ body.colorscheme-dark:has(.home-profile) {
 }
 
 @media (max-width: 768px) {
+  body:has(.home-profile) .navigation .container {
+    position: relative;
+  }
+
+  body:has(.home-profile) .navigation .menu-button {
+    margin-left: auto;
+  }
+
+  body:has(.home-profile) .navigation .navigation-list {
+    position: absolute;
+    top: 5rem;
+    left: 2rem;
+    right: 2rem;
+    width: auto;
+    margin: 0;
+  }
+
+  body:has(.home-profile) .navigation .navigation-list .navigation-item {
+    margin-left: 0 !important;
+  }
+
+  body:has(.home-profile) .footer {
+    white-space: normal;
+  }
+
   .centered .home-profile {
     grid-template-columns: minmax(0, 1fr);
     justify-items: center;

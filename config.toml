@@ -14,7 +14,7 @@ AI Researcher & Photographer
   faviconSVG = "/images/favicon-liu.svg"
   colorScheme = "dark"
   customCSS = ["css/custom.css"]  
-  customJS = ["js/background-music.js"]
+  customJS = ["js/background-music.js", "js/particle-text.js", "js/home-meteors.js"]
   avatarURL = "images/avatar-8149.jpg"
   hideColorSchemeToggle = false
 

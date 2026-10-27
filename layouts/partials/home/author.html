@@ -1,0 +1,11 @@
+<div class="particle-text" data-particle-text>
+  <div class="particle-text-source">
+    <h1>{{ .Site.Params.author }}</h1>
+    {{ if reflect.IsSlice .Site.Params.info }}
+      <h2>{{ range .Site.Params.info }}{{ . | markdownify }}<br>{{ end }}</h2>
+    {{ else }}
+      <h2>{{ .Site.Params.info | markdownify }}</h2>
+    {{ end }}
+  </div>
+  <canvas class="particle-text-canvas" aria-hidden="true"></canvas>
+</div>
