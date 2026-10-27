@@ -45,14 +45,14 @@
       tail.addColorStop(0.25, `rgba(189, 197, 219, ${alpha * 0.45})`);
       tail.addColorStop(1, "rgba(189, 197, 219, 0)");
       ctx.strokeStyle = tail;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1.3;
       ctx.beginPath();
       ctx.moveTo(tailX, tailY);
       ctx.lineTo(x, y);
       ctx.stroke();
       ctx.fillStyle = `rgba(250, 250, 255, ${alpha})`;
       ctx.beginPath();
-      ctx.arc(x, y, 1, 0, Math.PI * 2);
+      ctx.arc(x, y, 1.3, 0, Math.PI * 2);
       ctx.fill();
     }
     if (meteors.length) frame = requestAnimationFrame(animate);
@@ -68,7 +68,7 @@
           y: height * Math.random() * 0.25,
           vx: -160 - Math.random() * 70,
           vy: 180 + Math.random() * 60,
-          length: 90 + Math.random() * 70,
+          length: 110 + Math.random() * 80,
           life: 1500 + Math.random() * 500,
           born: performance.now(),
         });
