@@ -65,12 +65,12 @@ body:has(.home-profile) .footer {
 }
 
 body.colorscheme-dark:has(.home-profile) {
-  background-color: #16151D;
+  background-color: #000;
 }
 
 @media (prefers-color-scheme: dark) {
   body.colorscheme-auto:has(.home-profile) {
-    background-color: #16151D;
+    background-color: #000;
   }
 }
 
@@ -96,6 +96,32 @@ body.colorscheme-dark:has(.home-profile) {
   display: block;
   width: 100%;
   max-width: 400px;
+}
+
+.home-profile .avatar-ascii {
+  position: relative;
+}
+
+.home-profile .avatar-ascii img {
+  aspect-ratio: 3 / 4;
+}
+
+.avatar-ascii-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.avatar-ascii-video.is-playing {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar-ascii-video { opacity: 0; }
 }
 
 .home-profile-details {

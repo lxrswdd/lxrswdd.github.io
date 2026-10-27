@@ -16,6 +16,9 @@ AI Researcher & Photographer
   customCSS = ["css/custom.css"]  
   customJS = ["js/background-music.js", "js/particle-text.js", "js/home-meteors.js"]
   avatarURL = "images/avatar-8149.jpg"
+  avatarVideo = "video/avatar-ascii.webm"
+  avatarPoster = "images/avatar-ascii-poster.png"
+  showHomeConstellation = false
   hideColorSchemeToggle = false
 
 [params.goatCounter]

@@ -4,7 +4,9 @@
     {{ partialCached "home/avatar.html" . }}
 
     <div class="home-profile-details">
-      {{ partial "home/constellation.html" . }}
+      {{- if .Site.Params.showHomeConstellation }}
+        {{ partial "home/constellation.html" . }}
+      {{- end }}
       {{ partialCached "home/author.html" . }}
       {{ partialCached "home/social.html" . }}
       {{ partial "home/music.html" . }}

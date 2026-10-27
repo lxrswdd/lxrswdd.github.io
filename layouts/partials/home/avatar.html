@@ -1,0 +1,27 @@
+{{- if and (isset .Site.Params "avatarurl") (not (isset .Site.Params "gravatar")) -}}
+  {{- with .Site.Params.avatarURL -}}
+    {{- $photo := . | relURL -}}
+    {{- $alt := printf "Portrait of %s" $.Site.Params.author -}}
+    {{- with $.Site.Params.avatarVideo -}}
+      {{- $poster := $.Site.Params.avatarPoster | default $.Site.Params.avatarURL | relURL -}}
+      <div class="avatar avatar-ascii">
+        <img src="{{ $poster }}" alt="{{ $alt }}" width="900" height="1200">
+        <video class="avatar-ascii-video" data-avatar-video autoplay loop muted playsinline preload="metadata" poster="{{ $poster }}" aria-hidden="true">
+          <source src="{{ . | relURL }}" type="video/webm">
+        </video>
+      </div>
+      {{- if hugo.IsServer -}}
+        {{- $script := resources.Get "js/avatar-video.js" -}}
+        <script defer src="{{ $script.RelPermalink }}"></script>
+      {{- else -}}
+        {{- $script := resources.Get "js/avatar-video.js" | minify | fingerprint -}}
+        <script defer src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}"></script>
+      {{- end -}}
+    {{- else -}}
+      <div class="avatar"><img src="{{ $photo }}" alt="{{ $alt }}"></div>
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- with .Site.Params.gravatar -}}
+  <div class="avatar"><img src="https://www.gravatar.com/avatar/{{ md5 . }}?s=240&d=mp" alt="gravatar"></div>
+{{- end -}}
