@@ -4,9 +4,10 @@
     {{- $alt := printf "Portrait of %s" $.Site.Params.author -}}
     {{- with $.Site.Params.avatarVideo -}}
       {{- $poster := $.Site.Params.avatarPoster | default $.Site.Params.avatarURL | relURL -}}
-      <div class="avatar avatar-ascii">
-        <img src="{{ $poster }}" alt="{{ $alt }}" width="900" height="1200">
-        <video class="avatar-ascii-video" data-avatar-video autoplay loop muted playsinline preload="metadata" poster="{{ $poster }}" aria-hidden="true">
+      <div class="avatar avatar-ascii" data-avatar-stage="photo">
+        <img class="avatar-original" data-avatar-original src="{{ $photo }}" alt="{{ $alt }}" width="900" height="1200">
+        <img class="avatar-ascii-poster" src="{{ $poster }}" alt="" width="900" height="1200" aria-hidden="true">
+        <video class="avatar-ascii-video" data-avatar-video loop muted playsinline preload="auto" poster="{{ $poster }}" aria-hidden="true">
           <source src="{{ . | relURL }}" type="video/webm">
         </video>
       </div>
