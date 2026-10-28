@@ -122,7 +122,12 @@ body.colorscheme-dark:has(.home-profile) {
   opacity: 1;
 }
 
-.avatar-ascii.has-photo-particles[data-avatar-stage="assemble"] .avatar-original,
+.avatar-ascii[data-avatar-stage="illuminate"] .avatar-original {
+  opacity: var(--avatar-photo-clarity, 0);
+  -webkit-mask-image: radial-gradient(ellipse var(--avatar-light-width, 0.1%) var(--avatar-light-height, 0.1%) at 51.667% 0%, #000 65%, transparent 100%);
+  mask-image: radial-gradient(ellipse var(--avatar-light-width, 0.1%) var(--avatar-light-height, 0.1%) at 51.667% 0%, #000 65%, transparent 100%);
+}
+
 .avatar-ascii.has-photo-particles[data-avatar-stage="disperse"] .avatar-original {
   opacity: var(--avatar-photo-clarity, 0);
 }
@@ -137,7 +142,6 @@ body.colorscheme-dark:has(.home-profile) {
   pointer-events: none;
 }
 
-.avatar-ascii[data-avatar-stage="assemble"] .avatar-photo-particles,
 .avatar-ascii[data-avatar-stage="disperse"] .avatar-photo-particles {
   opacity: calc(1 - var(--avatar-photo-clarity, 0));
 }
@@ -278,8 +282,18 @@ body.colorscheme-dark .home-constellation {
   pointer-events: none;
 }
 
+.home-rope-light {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home-meteors { display: none; }
+  .home-rope-light { display: none; }
 }
 
 .centered .home-profile h1 {

@@ -6,7 +6,8 @@
   const photo = avatar.querySelector("[data-avatar-original]");
   const poster = avatar.querySelector(".avatar-ascii-poster");
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
-  const assembleDuration = 2000;
+  const darkDuration = 3000;
+  const illuminateDuration = 1200;
   const photoDuration = 1500;
   const disperseDuration = 1100;
   const pauseDuration = 500;
@@ -86,34 +87,22 @@
           });
         }
       }
-      let lastStage = "assemble";
+      let lastStage = "dark";
       let lastProgress = 0;
       const clamp = value => Math.max(0, Math.min(1, value));
       function draw(nextStage, progress) {
         lastStage = nextStage;
         lastProgress = progress;
         context.clearRect(0, 0, width, height);
-        if (nextStage !== "assemble" && nextStage !== "disperse") return;
+        if (nextStage !== "disperse") return;
         for (const particle of particles) {
           const { x, y, seed, phase, color, size, delay, travel, sway, turns } = particle;
-          let dx, dy, alpha, dotSize;
-          if (nextStage === "assemble") {
-            // Independent arrival times and curved eddies avoid a uniform moving curtain.
-            const arrival = clamp((progress - delay) / travel);
-            const drift = (1 - arrival) ** 1.5;
-            const curl = Math.sin(arrival * Math.PI * 2 * turns + phase) * Math.sin(Math.PI * arrival);
-            dx = -(140 + seed * 220) * drift + curl * sway * 0.35;
-            dy = (seed - 0.5) * 150 * drift + curl * sway;
-            alpha = Math.min(1, arrival * 2.5);
-            dotSize = size * (0.38 + 0.62 * arrival ** 3);
-          } else {
-            const departure = clamp((progress - x / width * 0.08 - delay) / (travel * 0.85));
-            const drift = departure ** 1.6;
-            dx = (width + seed * 160) * drift;
-            dy = -(35 + seed * 100) * drift + Math.sin(departure * Math.PI * 2 * turns + phase) * sway * departure;
-            alpha = (1 - departure) ** 1.4;
-            dotSize = size * (1 - departure * 0.62);
-          }
+          const departure = clamp((progress - x / width * 0.08 - delay) / (travel * 0.85));
+          const drift = departure ** 1.6;
+          const dx = (width + seed * 160) * drift;
+          const dy = -(35 + seed * 100) * drift + Math.sin(departure * Math.PI * 2 * turns + phase) * sway * departure;
+          const alpha = (1 - departure) ** 1.4;
+          const dotSize = size * (1 - departure * 0.62);
           if (alpha < 0.005) continue;
           context.globalAlpha = alpha;
           context.fillStyle = color;
@@ -255,10 +244,17 @@
     if (!canAnimate()) return;
     elapsed += previousTime === null ? 0 : Math.min(now - previousTime, 100);
     previousTime = now;
-    if (stage === "assemble") {
-      portrait?.draw("assemble", Math.min(elapsed / assembleDuration, 1));
-      setPhotoClarity((elapsed / assembleDuration - 0.8) / 0.2);
-      if (elapsed >= assembleDuration) {
+    if (stage === "dark" && elapsed >= darkDuration) {
+      elapsed = 0;
+      setStage("illuminate");
+    }
+    if (stage === "illuminate") {
+      const progress = Math.min(elapsed / illuminateDuration, 1);
+      const spread = progress * progress * (3 - 2 * progress);
+      setPhotoClarity(progress * 2);
+      avatar.style.setProperty("--avatar-light-width", `${(0.1 + 199.9 * spread).toFixed(2)}%`);
+      avatar.style.setProperty("--avatar-light-height", `${(0.1 + 199.9 * spread).toFixed(2)}%`);
+      if (elapsed >= illuminateDuration) {
         elapsed = 0;
         setStage("photo");
         portrait?.draw("photo", 1);
@@ -326,7 +322,7 @@
     if (photoLoaded) return;
     photoLoaded = true;
     if (!reducedMotion.matches) portrait = createPortraitParticles();
-    setStage(portrait ? "assemble" : "photo");
+    setStage("dark");
     syncPlayback();
   }
 

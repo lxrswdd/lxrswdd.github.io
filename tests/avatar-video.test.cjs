@@ -24,7 +24,7 @@ function setup({ reduced = false, loaded = true, rejectPlay = false, canvasSuppo
   let avatarWidth = 400;
   const properties = {};
   const avatar = {
-    dataset: { avatarStage: 'assemble' },
+    dataset: { avatarStage: 'dark' },
     classList: { add: c => avatarClasses.add(c), remove: c => avatarClasses.delete(c) },
     getBoundingClientRect: () => ({ width: avatarWidth, height: avatarWidth * 4 / 3 }),
     style: { setProperty: (name, value) => { properties[name] = String(value); } },
@@ -138,11 +138,15 @@ function setup({ reduced = false, loaded = true, rejectPlay = false, canvasSuppo
   };
 }
 
-test('assembles particles, holds 1.5 seconds, disperses, pauses 500 ms, then reveals video', () => {
+test('waits for the torch, illuminates the photo, holds 1.5 seconds, then disperses and reveals video', () => {
   const h = setup();
-  assert.equal(h.avatar.dataset.avatarStage, 'assemble');
-  h.advance(1999);
-  assert.equal(h.avatar.dataset.avatarStage, 'assemble');
+  assert.equal(h.avatar.dataset.avatarStage, 'dark');
+  h.advance(2999);
+  assert.equal(h.avatar.dataset.avatarStage, 'dark');
+  h.advance(1);
+  assert.equal(h.avatar.dataset.avatarStage, 'illuminate');
+  h.advance(1199);
+  assert.equal(h.avatar.dataset.avatarStage, 'illuminate');
   h.advance(1);
   assert.equal(h.avatar.dataset.avatarStage, 'photo');
   h.advance(1499);
@@ -185,16 +189,17 @@ test('assembles particles, holds 1.5 seconds, disperses, pauses 500 ms, then rev
   assert.equal(h.frames.size, 0);
 });
 
-test('particles keep photo colors, yield to the original image, then drift right', () => {
+test('the photo has no incoming particles; only its departure uses colored wind particles', () => {
   const h = setup();
   assert.equal(h.draws.length, 0);
   h.advance(1000);
-  assert(h.draws.length > 0);
-  assert(h.draws.every(d => d.color === 'rgb(180,100,70)' && d.w > 0 && d.w < 2.8));
-  h.advance(1000);
+  assert.equal(h.draws.length, 0);
+  h.advance(3200);
   assert.equal(h.draws.length, 0);
   assert.equal(h.properties['--avatar-photo-clarity'], '1.000');
   h.advance(1500);
+  assert(h.draws.length > 0);
+  assert(h.draws.every(d => d.color === 'rgb(180,100,70)' && d.w > 0 && d.w < 2.8));
   const start = h.draws.map(d => d.x);
   h.advance(550);
   assert(h.draws[0].x > start[0]);
@@ -204,15 +209,19 @@ test('particles keep photo colors, yield to the original image, then drift right
   assert.equal(h.draws.length, 0);
 });
 
-test('the clear original blends in before the 1.5-second hold and out before dispersion', () => {
+test('the torch reveals the original from its shaft before the hold, then blends out for dispersion', () => {
   const h = setup();
-  h.advance(1600);
+  h.advance(3000);
   assert.equal(h.properties['--avatar-photo-clarity'], '0.000');
-  h.advance(200);
+  assert.equal(h.avatar.dataset.avatarStage, 'illuminate');
+  assert.equal(h.properties['--avatar-light-width'], '0.10%');
+  h.advance(300);
   assert.equal(h.properties['--avatar-photo-clarity'], '0.500');
-  h.advance(200);
+  h.advance(900);
   assert.equal(h.avatar.dataset.avatarStage, 'photo');
   assert.equal(h.properties['--avatar-photo-clarity'], '1.000');
+  assert.equal(h.properties['--avatar-light-width'], '200.00%');
+  assert.equal(h.properties['--avatar-light-height'], '200.00%');
   h.advance(1499);
   assert.equal(h.avatar.dataset.avatarStage, 'photo');
   h.advance(1);
@@ -224,7 +233,7 @@ test('the clear original blends in before the 1.5-second hold and out before dis
   assert.equal(h.properties['--avatar-photo-clarity'], '0.000');
 });
 
-test('waits for the original photo to load before assembling particles', () => {
+test('waits for the original photo to load before the dark and illumination stages', () => {
   const h = setup({ loaded: false });
   h.advance(5000);
   assert.equal(h.frames.size, 0);
@@ -232,15 +241,17 @@ test('waits for the original photo to load before assembling particles', () => {
   h.photo.naturalWidth = 900;
   h.photoEvents.load();
   h.tick(0);
-  h.advance(1999);
-  assert.equal(h.avatar.dataset.avatarStage, 'assemble');
+  h.advance(2999);
+  assert.equal(h.avatar.dataset.avatarStage, 'dark');
   h.advance(1);
+  assert.equal(h.avatar.dataset.avatarStage, 'illuminate');
+  h.advance(1200);
   assert.equal(h.avatar.dataset.avatarStage, 'photo');
 });
 
 test('background tabs pause the intro clock and resume without restarting it', () => {
   const h = setup();
-  for (const [stage, duration] of [['assemble', 2000], ['photo', 1500], ['disperse', 1100], ['pause', 500], ['reveal', 2800]]) {
+  for (const [stage, duration] of [['dark', 3000], ['illuminate', 1200], ['photo', 1500], ['disperse', 1100], ['pause', 500], ['reveal', 2800]]) {
     h.tick(0);
     h.advance(200);
     h.hide(true);
@@ -255,7 +266,7 @@ test('background tabs pause the intro clock and resume without restarting it', (
 
 test('video visibility changes never repeat particles or the reveal', () => {
   const h = setup();
-  h.advance(8500);
+  h.advance(10500);
   h.hide(true);
   assert.equal(h.avatar.dataset.avatarStage, 'still');
   h.hide(false);
@@ -288,11 +299,11 @@ test('reduced motion skips particles, the reveal, and video playback', () => {
 test('source errors and blocked autoplay fall back to the ASCII still', async () => {
   const failed = setup();
   failed.sourceEvents.error();
-  failed.advance(8500);
+  failed.advance(10500);
   assert.equal(failed.avatar.dataset.avatarStage, 'still');
   assert.equal(failed.video.plays, 0);
   const blocked = setup({ rejectPlay: true });
-  blocked.advance(8500);
+  blocked.advance(10500);
   await Promise.resolve();
   assert.equal(blocked.avatar.dataset.avatarStage, 'still');
   assert(!blocked.classes.has('is-playing'));
@@ -300,7 +311,7 @@ test('source errors and blocked autoplay fall back to the ASCII still', async ()
 
 test('ASCII cells appear randomly across all rows and cover the full video exactly once', () => {
   const h = setup();
-  h.advance(5100);
+  h.advance(7300);
   const mask = h.offscreens.at(-1);
   assert.equal(mask.width, 113);
   assert.equal(mask.height, 108);
@@ -325,12 +336,12 @@ test('ASCII cells appear randomly across all rows and cover the full video exact
 
 test('random reveal uses the poster if playback is blocked, and fades if canvas is unavailable', () => {
   const blocked = setup({ rejectPlay: true });
-  blocked.advance(5100);
+  blocked.advance(7300);
   blocked.tick(0);
   blocked.advance(1400);
   assert.equal(blocked.revealDraws[0].source, blocked.poster);
   const fallback = setup({ revealSupported: false });
-  fallback.advance(5100);
+  fallback.advance(7300);
   fallback.tick(0);
   fallback.advance(1400);
   assert.equal(fallback.properties['--avatar-reveal-opacity'], '0.250');
@@ -340,7 +351,7 @@ test('random reveal uses the poster if playback is blocked, and fades if canvas 
 
 test('reduced motion during the random reveal releases its canvas and observers', () => {
   const h = setup();
-  h.advance(5400);
+  h.advance(7600);
   assert(h.avatarClasses.has('has-character-reveal'));
   h.reduce(true);
   assert(!h.avatarClasses.has('has-character-reveal'));
@@ -351,7 +362,7 @@ test('reduced motion during the random reveal releases its canvas and observers'
 
 test('character reveal accelerates continuously over 2.8 seconds', () => {
   const h = setup();
-  h.advance(5100);
+  h.advance(7300);
   h.tick(0);
   const mask = h.offscreens.at(-1);
   const totalCells = mask.width * mask.height;
@@ -376,15 +387,15 @@ test('particles adapt to screen size without restarting their stage', () => {
   h.resize(300);
   assert.equal(h.canvas.width, 600);
   assert.deepEqual(h.draws, before);
-  h.advance(1000);
+  h.advance(3200);
   assert.equal(h.avatar.dataset.avatarStage, 'photo');
 });
 
-test('wind paths and arrival times vary between visits without moving on resize', () => {
+test('outgoing wind paths vary between visits', () => {
   const first = setup({ seed: 1 });
   const second = setup({ seed: 99 });
-  first.advance(900);
-  second.advance(900);
+  first.advance(5900);
+  second.advance(5900);
   assert(first.draws.length > 0 && second.draws.length > 0);
   assert.notDeepEqual(first.draws, second.draws);
   assert(first.draws.every(d => Number.isFinite(d.x) && Number.isFinite(d.y)));
@@ -394,8 +405,10 @@ test('wind paths and arrival times vary between visits without moving on resize'
 test('unsupported canvas and unreadable images retain a plain-photo fallback', () => {
   for (const options of [{ canvasSupported: false }, { sampleError: true }]) {
     const h = setup(options);
-    assert.equal(h.avatar.dataset.avatarStage, 'photo');
+    assert.equal(h.avatar.dataset.avatarStage, 'dark');
     assert(!h.avatarClasses.has('has-photo-particles'));
+    h.advance(4200);
+    assert.equal(h.avatar.dataset.avatarStage, 'photo');
     h.advance(1500);
     assert.equal(h.avatar.dataset.avatarStage, 'disperse');
     h.advance(4500);

@@ -4,7 +4,7 @@
     {{- $alt := printf "Portrait of %s" $.Site.Params.author -}}
     {{- with $.Site.Params.avatarVideo -}}
       {{- $poster := $.Site.Params.avatarPoster | default $.Site.Params.avatarURL | relURL -}}
-      <div class="avatar avatar-ascii" data-avatar-stage="assemble">
+      <div class="avatar avatar-ascii" data-avatar-stage="dark">
         <img class="avatar-original" data-avatar-original src="{{ $photo }}" alt="{{ $alt }}" width="900" height="1200">
         <canvas class="avatar-photo-particles" data-avatar-particles aria-hidden="true"></canvas>
         <img class="avatar-ascii-poster" src="{{ $poster }}" alt="" width="900" height="1200" aria-hidden="true">

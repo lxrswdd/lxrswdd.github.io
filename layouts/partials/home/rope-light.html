@@ -1,0 +1,8 @@
+<canvas class="home-rope-light" data-home-rope-light data-rope-state="waiting" aria-hidden="true"></canvas>
+{{- $script := resources.Get "js/home-rope-light.js" -}}
+{{- if hugo.IsServer -}}
+  <script defer src="{{ $script.RelPermalink }}"></script>
+{{- else -}}
+  {{- $script = $script | minify | fingerprint -}}
+  <script defer src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}"></script>
+{{- end -}}
