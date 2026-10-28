@@ -4,13 +4,16 @@
     {{- $alt := printf "Portrait of %s" $.Site.Params.author -}}
     {{- with $.Site.Params.avatarVideo -}}
       {{- $poster := $.Site.Params.avatarPoster | default $.Site.Params.avatarURL | relURL -}}
-      <div class="avatar avatar-ascii" data-avatar-stage="photo">
+      <div class="avatar avatar-ascii" data-avatar-stage="assemble">
         <img class="avatar-original" data-avatar-original src="{{ $photo }}" alt="{{ $alt }}" width="900" height="1200">
+        <canvas class="avatar-photo-particles" data-avatar-particles aria-hidden="true"></canvas>
         <img class="avatar-ascii-poster" src="{{ $poster }}" alt="" width="900" height="1200" aria-hidden="true">
         <video class="avatar-ascii-video" data-avatar-video loop muted playsinline preload="auto" poster="{{ $poster }}" aria-hidden="true">
           <source src="{{ . | relURL }}" type="video/webm">
         </video>
+        <canvas class="avatar-character-reveal" data-avatar-reveal data-grid-width="900" data-grid-height="1200" data-grid-size="8" aria-hidden="true"></canvas>
       </div>
+      <noscript><style>.home-profile .avatar .avatar-original { opacity: 1; }</style></noscript>
       {{- if hugo.IsServer -}}
         {{- $script := resources.Get "js/avatar-video.js" -}}
         <script defer src="{{ $script.RelPermalink }}"></script>
