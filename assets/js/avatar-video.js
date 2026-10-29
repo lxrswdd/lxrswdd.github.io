@@ -8,9 +8,10 @@
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const darkDuration = 3000;
   const illuminateDuration = 1200;
-  const photoDuration = 1500;
-  const disperseDuration = 1100;
+  const photoDuration = 750;
+  const flickerDuration = 1100;
   const pauseDuration = 500;
+  const repairDuration = 1200;
   const revealDuration = 2800;
   let stage = "photo";
   let elapsed = 0;
@@ -21,7 +22,6 @@
   let revealComplete = false;
   let failed = false;
   let playRequest = 0;
-  let portrait = null;
   let characterReveal = null;
 
   const canAnimate = () => !document.hidden && !reducedMotion.matches;
@@ -51,94 +51,10 @@
     });
   }
 
-  function createPortraitParticles() {
-    const canvas = avatar.querySelector("[data-avatar-particles]");
-    if (!canvas) return null;
-    try {
-      const context = canvas.getContext("2d");
-      const sampleCanvas = document.createElement("canvas");
-      const sample = sampleCanvas.getContext("2d", { willReadFrequently: true });
-      if (!context || !sample) return null;
-      const width = 400;
-      const height = Math.round(width * photo.naturalHeight / photo.naturalWidth);
-      sampleCanvas.width = width;
-      sampleCanvas.height = height;
-      sample.drawImage(photo, 0, 0, width, height);
-      const pixels = sample.getImageData(0, 0, width, height).data;
-      const particles = [];
-      // Sample once; the clear-photo hold uses the original image instead of this canvas.
-      for (let row = 1; row < height; row += 3) {
-        for (let column = 1; column < width; column += 3) {
-          const x = column + (Math.random() - 0.5) * 1.3;
-          const y = row + (Math.random() - 0.5) * 1.3;
-          const i = (Math.floor(y) * width + Math.floor(x)) * 4;
-          const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2];
-          if (pixels[i + 3] === 0 || Math.max(r, g, b) < 15) continue;
-          const color = `rgb(${r},${g},${b})`;
-          const size = 2.35 + Math.random() * 0.4;
-          particles.push({
-            x, y, color, size,
-            seed: Math.random(),
-            phase: Math.random() * Math.PI * 2,
-            delay: Math.random() * 0.44,
-            travel: 0.4 + Math.random() * 0.16,
-            sway: 18 + Math.random() * 45,
-            turns: 0.6 + Math.random() * 1.2,
-          });
-        }
-      }
-      let lastStage = "dark";
-      let lastProgress = 0;
-      const clamp = value => Math.max(0, Math.min(1, value));
-      function draw(nextStage, progress) {
-        lastStage = nextStage;
-        lastProgress = progress;
-        context.clearRect(0, 0, width, height);
-        if (nextStage !== "disperse") return;
-        for (const particle of particles) {
-          const { x, y, seed, phase, color, size, delay, travel, sway, turns } = particle;
-          const departure = clamp((progress - x / width * 0.08 - delay) / (travel * 0.85));
-          const drift = departure ** 1.6;
-          const dx = (width + seed * 160) * drift;
-          const dy = -(35 + seed * 100) * drift + Math.sin(departure * Math.PI * 2 * turns + phase) * sway * departure;
-          const alpha = (1 - departure) ** 1.4;
-          const dotSize = size * (1 - departure * 0.62);
-          if (alpha < 0.005) continue;
-          context.globalAlpha = alpha;
-          context.fillStyle = color;
-          context.fillRect(x + dx - dotSize / 2, y + dy - dotSize / 2, dotSize, dotSize);
-        }
-        context.globalAlpha = 1;
-      }
-      function resize() {
-        const scale = Math.min(window.devicePixelRatio || 1, 2) * avatar.getBoundingClientRect().width / width;
-        canvas.width = Math.max(1, Math.round(width * scale));
-        canvas.height = Math.max(1, Math.round(height * scale));
-        context.setTransform(canvas.width / width, 0, 0, canvas.height / height, 0, 0);
-        draw(lastStage, lastProgress);
-      }
-      const observer = new ResizeObserver(resize);
-      observer.observe(avatar);
-      resize();
-      avatar.classList.add("has-photo-particles");
-      return {
-        draw,
-        dispose() {
-          observer.disconnect();
-          canvas.width = canvas.height = 1;
-          particles.length = 0;
-          avatar.classList.remove("has-photo-particles");
-        },
-      };
-    } catch {
-      // Keep the normal photo intro if canvas or image sampling is unavailable.
-      return null;
-    }
-  }
-
-  function releasePortrait() {
-    portrait?.dispose();
-    portrait = null;
+  function setTorchPower(value) {
+    if (avatar.dataset.torchPower === String(value)) return;
+    avatar.dataset.torchPower = String(value);
+    avatar.style.setProperty("--avatar-power", String(value));
   }
 
   function setPhotoClarity(value) {
@@ -164,19 +80,17 @@
       const rows = Math.ceil(gridHeight / cellHeight);
       mask.width = columns;
       mask.height = rows;
-      const cells = Array.from({ length: columns * rows }, (_, index) => index);
-      for (let i = cells.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [cells[i], cells[j]] = [cells[j], cells[i]];
-      }
+      const cells = Array.from({ length: columns * rows }, (_, index) => ({
+        index,
+        arrival: Math.floor(index / columns) / (rows - 1) * 0.9 + Math.random() * 0.1,
+      })).sort((a, b) => a.arrival - b.arrival);
       let visibleCells = 0;
       let lastProgress = 0;
       maskContext.fillStyle = "#fff";
       function draw(progress) {
         lastProgress = progress;
-        const count = Math.floor(cells.length * progress);
-        while (visibleCells < count) {
-          const cell = cells[visibleCells++];
+        while (visibleCells < cells.length && cells[visibleCells].arrival <= progress) {
+          const cell = cells[visibleCells++].index;
           maskContext.fillRect(cell % columns, Math.floor(cell / columns), 1, 1);
         }
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -222,7 +136,8 @@
   }
 
   function beginReveal() {
-    releasePortrait();
+    setTorchPower(1);
+    avatar.dataset.asciiLightProgress = "0";
     introComplete = true;
     stopIntro();
     elapsed = 0;
@@ -246,6 +161,7 @@
     previousTime = now;
     if (stage === "dark" && elapsed >= darkDuration) {
       elapsed = 0;
+      setTorchPower(1);
       setStage("illuminate");
     }
     if (stage === "illuminate") {
@@ -257,27 +173,32 @@
       if (elapsed >= illuminateDuration) {
         elapsed = 0;
         setStage("photo");
-        portrait?.draw("photo", 1);
       }
     }
     if (stage === "photo" && elapsed >= photoDuration) {
       elapsed = 0;
-      setStage("disperse");
+      setStage("flicker");
     }
-    if (stage === "disperse") {
-      setPhotoClarity(1 - elapsed / 200);
-      portrait?.draw("disperse", Math.min(elapsed / disperseDuration, 1));
-      if (elapsed >= disperseDuration) {
+    if (stage === "flicker") {
+      const power = elapsed < 140 ? 1 : elapsed < 260 ? 0 : elapsed < 420 ? 1 :
+        elapsed < 540 ? 0 : elapsed < 760 ? 1 : 0;
+      setTorchPower(power);
+      if (elapsed >= flickerDuration) {
         elapsed = 0;
         setStage("pause");
       }
     }
     if (stage === "pause" && elapsed >= pauseDuration) {
+      elapsed = 0;
+      setStage("repair");
+    }
+    if (stage === "repair" && elapsed >= repairDuration) {
       beginReveal();
       return;
     }
     if (stage === "reveal") {
       const progress = Math.min(elapsed / revealDuration, 1) ** 2;
+      avatar.dataset.asciiLightProgress = Math.min(1, progress / 0.9).toFixed(4);
       if (characterReveal) characterReveal.draw(progress);
       else avatar.style.setProperty("--avatar-reveal-opacity", progress.toFixed(3));
       if (progress === 1) {
@@ -295,7 +216,6 @@
       playRequest++;
       video.pause();
       if (reducedMotion.matches) {
-        releasePortrait();
         releaseCharacterReveal();
         introComplete = true;
         revealComplete = true;
@@ -321,7 +241,6 @@
   function startIntro() {
     if (photoLoaded) return;
     photoLoaded = true;
-    if (!reducedMotion.matches) portrait = createPortraitParticles();
     setStage("dark");
     syncPlayback();
   }
@@ -346,6 +265,7 @@
   }, { once: true });
   video.muted = true;
   video.autoplay = false;
+  setTorchPower(0);
   if (photo.complete && photo.naturalWidth) startIntro();
   else syncPlayback();
 })();

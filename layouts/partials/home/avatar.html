@@ -6,7 +6,6 @@
       {{- $poster := $.Site.Params.avatarPoster | default $.Site.Params.avatarURL | relURL -}}
       <div class="avatar avatar-ascii" data-avatar-stage="dark">
         <img class="avatar-original" data-avatar-original src="{{ $photo }}" alt="{{ $alt }}" width="900" height="1200">
-        <canvas class="avatar-photo-particles" data-avatar-particles aria-hidden="true"></canvas>
         <img class="avatar-ascii-poster" src="{{ $poster }}" alt="" width="900" height="1200" aria-hidden="true">
         <video class="avatar-ascii-video" data-avatar-video loop muted playsinline preload="auto" poster="{{ $poster }}" aria-hidden="true">
           <source src="{{ . | relURL }}" type="video/webm">

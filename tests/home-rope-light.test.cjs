@@ -85,6 +85,16 @@ function setup({ reduced = false, dark = true, loaded = true, stage = 'dark', su
       mutations.filter(m => m.target === avatar).forEach(m => m.callback());
       tick(0);
     },
+    power(value) {
+      avatar.dataset.torchPower = String(value);
+      mutations.filter(m => m.target === avatar).forEach(m => m.callback());
+      tick(0);
+    },
+    front(value) {
+      avatar.dataset.asciiLightProgress = String(value);
+      mutations.filter(m => m.target === avatar).forEach(m => m.callback());
+      tick(0);
+    },
     hide(value) { document.hidden = value; pageEvents.visibilitychange(); tick(0); },
     reduce(value) { reducedMedia.matches = value; reducedMedia.change(); tick(0); },
     dark(value) { dark = value; mutations.filter(m => m.target === body).forEach(m => m.callback()); tick(0); },
@@ -143,9 +153,9 @@ test('the rope pays out from the top instead of appearing at full length', () =>
   h.stage('illuminate');
   h.advance(200);
   assert.equal(Number(h.canvas.dataset.ropeEnd), 178);
-  h.stage('disperse');
+  h.stage('pause');
   h.advance(350);
-  assert(Number(h.canvas.dataset.ropeEnd) < 178);
+  assert.equal(Number(h.canvas.dataset.ropeEnd), 178);
 });
 
 test('the figure stays above the viewport until the rope is fully deployed and settled', () => {
@@ -162,22 +172,55 @@ test('the figure stays above the viewport until the rope is fully deployed and s
   assert.equal(h.translations[0].y, 109);
 });
 
-test('the torch switches off and the figure exits before the WebM reveal', () => {
+test('the torch follows the same power signal as the photo during both flickers', () => {
   const h = setup();
   h.advance(3000);
   h.stage('photo');
-  h.advance(1500);
-  h.stage('disperse');
-  assert.equal(h.canvas.dataset.ropeState, 'leaving');
-  h.advance(180);
+  h.advance(750);
+  h.stage('flicker');
+  for (const power of [1, 0, 1, 0, 1, 0]) {
+    h.power(power);
+    assert.equal(Number(h.canvas.dataset.lightLevel), power);
+  }
+  h.stage('pause');
+  assert.equal(h.canvas.dataset.ropeState, 'broken');
   assert.equal(h.canvas.dataset.lightLevel, '0.000');
-  h.advance(520);
-  assert.equal(h.canvas.dataset.ropeState, 'done');
-  assert.equal(h.frames.size, 0);
-  assert.equal(h.strokes.length, 0);
-  assert.equal(h.canvas.width, 1);
+  assert.equal(Number(h.canvas.dataset.ropeEnd), 178);
+});
+
+test('the figure taps the unlit torch twice before relighting it for the WebM', () => {
+  const h = setup();
+  h.stage('repair');
+  assert.equal(h.canvas.dataset.ropeState, 'repairing');
+  h.advance(340);
+  assert.equal(h.canvas.dataset.tapCount, '1');
+  assert(h.glyphs.some(g => g.character === '+' && g.x === 44 && g.y === 29));
+  assert(h.glyphs.some(g => g.character === '*'));
+  h.hide(true);
+  h.advance(10000);
+  h.hide(false);
+  assert.equal(h.canvas.dataset.tapCount, '1');
+  h.advance(180);
+  assert(h.glyphs.some(g => g.character === '+' && g.x === 24 && g.y === 16));
+  h.advance(240);
+  assert.equal(h.canvas.dataset.tapCount, '2');
+  assert.equal(h.canvas.dataset.lightLevel, '0.000');
+  h.advance(440);
+  h.stage('reveal');
+  assert.equal(h.canvas.dataset.ropeState, 'relighting');
+  h.advance(180);
+  assert.equal(h.canvas.dataset.lightLevel, '1.000');
   h.stage('video');
+  assert.equal(h.canvas.dataset.ropeState, 'holding');
+  assert.equal(h.canvas.dataset.lightLevel, '1.000');
   assert.equal(h.frames.size, 0);
+  h.hide(true);
+  assert.equal(h.glyphs.length, 0);
+  h.hide(false);
+  assert(h.glyphs.length > 0);
+  assert.equal(h.frames.size, 0);
+  h.reduce(true);
+  assert.equal(h.canvas.width, 1);
 });
 
 test('photo loading gates the descent; errors and late video stages skip it', () => {
@@ -194,6 +237,22 @@ test('photo loading gates the descent; errors and late video stages skip it', ()
   const late = setup({ stage: 'video' });
   assert.equal(late.canvas.dataset.ropeState, 'done');
   assert.equal(late.frames.size, 0);
+});
+
+test('the relit beam follows shared downward progress before settling on the original shaft', () => {
+  const h = setup();
+  h.stage('reveal');
+  h.advance(180);
+  for (const front of [0.1, 0.4, 0.75, 1]) {
+    h.front(front);
+    assert.equal(Number(h.canvas.dataset.lightFront), front);
+    const tipY = 160 + 400 * 4 / 3 * front;
+    assert(h.strokes.some(stroke => stroke.points.length === 2 &&
+      Math.abs(stroke.points[0][1] - tipY) < 0.01 && Math.abs(stroke.points[1][1] - tipY) < 0.01));
+  }
+  h.stage('video');
+  assert.equal(Number(h.canvas.dataset.lightFront), 0.435);
+  assert.equal(h.frames.size, 0);
 });
 
 test('hidden pages pause the descent and resume from the same position', () => {

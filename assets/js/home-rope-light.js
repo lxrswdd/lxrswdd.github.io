@@ -10,7 +10,6 @@
   const descentDuration = 1850;
   const ropeDeployDuration = 850;
   const descentDelay = ropeDeployDuration + 150;
-  const exitDuration = 700;
   let mode = "waiting";
   let elapsed = 0;
   let previousTime = null;
@@ -61,7 +60,10 @@
 
   function drawLight(beamX, outletY, intensity, scale) {
     if (intensity <= 0) return;
-    const end = box.top + box.height * 0.435;
+    const sweeping = mode === "relighting";
+    const front = sweeping ? clamp(Number(avatar.dataset.asciiLightProgress) || 0) : 0.435;
+    canvas.dataset.lightFront = front.toFixed(4);
+    const end = box.top + box.height * Math.min(0.435, front);
     const cone = ctx.createLinearGradient(beamX, outletY, beamX, end);
     cone.addColorStop(0, `rgba(255, 221, 154, ${0.22 * intensity})`);
     cone.addColorStop(0.3, `rgba(247, 195, 103, ${0.08 * intensity})`);
@@ -82,6 +84,16 @@
     core.addColorStop(0.75, `rgba(255, 200, 105, ${0.3 * intensity})`);
     core.addColorStop(1, "rgba(255, 200, 105, 0)");
     sketch([[beamX, box.top], [beamX, end]], core, 2.2 * scale);
+    if (sweeping) {
+      const frontY = box.top + box.height * front;
+      const alpha = Math.sin(Math.PI * front) * intensity;
+      const leading = ctx.createLinearGradient(beamX, end, beamX, frontY);
+      leading.addColorStop(0, "rgba(255, 218, 148, 0)");
+      leading.addColorStop(1, `rgba(255, 218, 148, ${alpha * 0.5})`);
+      if (front > 0.435) sketch([[beamX, end], [beamX, frontY]], leading, 2 * scale);
+      sketch([[beamX - 5 * scale, frontY], [beamX + 5 * scale, frontY]],
+        `rgba(255, 228, 174, ${alpha * 0.6})`, 1.4 * scale);
+    }
   }
 
   function glyph(character, x, y, color = "#deddd5", size = 11) {
@@ -97,24 +109,23 @@
     if (!box || mode === "waiting" || mode === "done") return;
     const scale = Math.max(0.75, Math.min(box.width / 400, 1));
     const arrival = mode === "descending" ? 1 - (1 - clamp((elapsed - descentDelay) / descentDuration)) ** 2 : 1;
-    const departure = mode === "leaving" ? smooth(elapsed / exitDuration) : 0;
-    const position = arrival * (1 - departure);
+    const position = arrival;
     const beamX = box.left + box.width * (465 / 900);
     const direction = box.width < 350 ? -1 : 1;
     const ropeX = beamX - direction * 47 * scale;
     const finalHead = box.top - 51 * scale;
     const headY = -64 * scale + (finalHead + 64 * scale) * position;
     const sway = Math.sin(elapsed / 190) * 2 * (1 - position);
-    const intensity = mode === "lighting" ? smooth(elapsed / 180) :
-      mode === "leaving" ? 1 - smooth(elapsed / 180) : 0;
+    const intensity = mode === "lighting" || mode === "relighting" ? smooth(elapsed / 180) :
+      mode === "holding" ? 1 : mode === "flickering" ? Number(avatar.dataset.torchPower ?? 1) : 0;
     canvas.dataset.beamX = beamX.toFixed(2);
     canvas.dataset.lightLevel = intensity.toFixed(3);
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
-    ctx.globalAlpha = 1 - departure;
+    ctx.globalAlpha = 1;
 
     const deployed = mode === "descending" ? smooth(elapsed / ropeDeployDuration) : 1;
-    const ropeEnd = -7 * scale + (box.top + 25 * scale) * deployed * (1 - departure);
+    const ropeEnd = -7 * scale + (box.top + 25 * scale) * deployed;
     canvas.dataset.ropeEnd = ropeEnd.toFixed(2);
     for (let y = 2; y < ropeEnd; y += 7 * scale) glyph(":", ropeX, y, "#8e8877", 9 * scale);
     drawLight(beamX, headY + 43 * scale, intensity, scale);
@@ -123,17 +134,27 @@
     ctx.translate(ropeX + sway, headY);
     ctx.scale(direction * scale, scale);
     // Every part of the figure is a monospace ASCII glyph, including the rope and torch.
-    glyph("O", 15, 0, "#e8e5db", 13);
+    glyph(mode === "broken" || mode === "repairing" ? "o" : "O", 15, 0, "#e8e5db", 13);
     for (const [character, x, y] of [
       ["|", 15, 10], ["|", 14, 19], ["+", 11, 27],
-      ["-", 8, 12], ["/", 3, 8], ["+", 0, 5],
       ["\\", 22, 16], ["-", 29, 22], ["-", 37, 27], ["+", 44, 29],
       ["/", 4, 34], ["_", 3, 42], ["\\", 20, 34], ["/", 18, 43],
     ]) glyph(character, x, y);
+    const tap = mode === "repairing" ? Math.max(0, 1 - Math.abs(elapsed - 340) / 180,
+      1 - Math.abs(elapsed - 760) / 180) : 0;
+    canvas.dataset.tapCount = mode === "repairing" ? String(Number(elapsed >= 340) + Number(elapsed >= 760)) : "0";
+    if (mode === "repairing") {
+      glyph("\\", 20, 14);
+      glyph("-", 25 + 8 * tap, 18 + 6 * tap);
+      glyph("+", 24 + 20 * tap, 16 + 13 * tap);
+      if (tap > 0.85) glyph("*", 53, 29, "#e8d298", 9);
+    } else {
+      for (const [character, x, y] of [["-", 8, 12], ["/", 3, 8], ["+", 0, 5]]) glyph(character, x, y);
+    }
     const torchX = 47;
     glyph("[]", torchX, 34, "#c8b78b", 9);
     glyph("=", torchX, 42, intensity > 0 ? "#ffe6ac" : "#8b816b", 10);
-    if (mode === "lighting" && elapsed < 160) {
+    if ((mode === "lighting" || mode === "relighting") && elapsed < 160) {
       glyph("*", torchX + 10, 26, "#e8d298", 9);
     }
     ctx.restore();
@@ -146,10 +167,6 @@
     elapsed += previousTime === null ? 0 : Math.min(now - previousTime, 100);
     previousTime = now;
     box = avatar.getBoundingClientRect();
-    if (mode === "leaving" && elapsed >= exitDuration) {
-      finish();
-      return;
-    }
     draw();
     frame = requestAnimationFrame(animate);
   }
@@ -164,18 +181,34 @@
       clear();
       return;
     }
+    if (mode === "holding") {
+      stop();
+      draw();
+      return;
+    }
     if (mode !== "waiting" && mode !== "done" && frame === null) frame = requestAnimationFrame(animate);
   }
 
   function syncStage() {
     const stage = avatar.dataset.avatarStage;
-    if (stage === lastStage || mode === "done") return;
+    if (mode === "done") return;
+    if (stage === lastStage) {
+      if ((mode === "flickering" || mode === "relighting") && enabled()) draw();
+      return;
+    }
+    const late = lastStage === null;
     lastStage = stage;
     if (stage === "illuminate" || stage === "photo") {
       if (mode !== "lighting") setMode("lighting");
     }
-    else if (stage === "disperse") setMode("leaving");
-    else if (["pause", "reveal", "video", "still"].includes(stage)) finish();
+    else if (stage === "flicker") setMode("flickering");
+    else if (stage === "pause") setMode("broken");
+    else if (stage === "repair") setMode("repairing");
+    else if (stage === "reveal") setMode("relighting");
+    else if (stage === "video" || stage === "still") {
+      if (late) finish();
+      else setMode("holding");
+    }
     sync();
   }
 
@@ -199,7 +232,9 @@
     if (enabled()) draw();
   }
 
-  new MutationObserver(syncStage).observe(avatar, { attributes: true, attributeFilter: ["data-avatar-stage"] });
+  new MutationObserver(syncStage).observe(avatar, {
+    attributes: true, attributeFilter: ["data-avatar-stage", "data-torch-power", "data-ascii-light-progress"],
+  });
   new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ["class"] });
   new ResizeObserver(resize).observe(avatar);
   window.addEventListener("resize", resize);
