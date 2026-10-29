@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const code = fs.readFileSync(path.join(__dirname, '../assets/js/avatar-video.js'), 'utf8');
-const revealStart = 7750;
+const revealStart = 7500;
 
 function setup({ reduced = false, loaded = true, rejectPlay = false, canvasSupported = true } = {}) {
   let now = 0, nextFrame = 0, avatarWidth = 400;
@@ -90,10 +90,10 @@ function setup({ reduced = false, loaded = true, rejectPlay = false, canvasSuppo
   };
 }
 
-test('photo illumination and 0.75-second hold precede flicker, darkness, repair, and WebM reveal', () => {
+test('photo illumination and 0.5-second hold precede flicker, darkness, repair, and WebM reveal', () => {
   const h = setup();
   assert.equal(h.avatar.dataset.torchPower, '0');
-  for (const [stage, duration] of [['dark', 3000], ['illuminate', 1200], ['photo', 750],
+  for (const [stage, duration] of [['dark', 3000], ['illuminate', 1200], ['photo', 500],
     ['flicker', 1100], ['pause', 500], ['repair', 1200]]) {
     assert.equal(h.avatar.dataset.avatarStage, stage);
     h.advance(duration - 1);
@@ -113,7 +113,7 @@ test('photo illumination and 0.75-second hold precede flicker, darkness, repair,
 
 test('photo opacity and torch power share two interruption pulses followed by a final blackout', () => {
   const h = setup();
-  h.advance(4950);
+  h.advance(4700);
   const levels = [h.avatar.dataset.torchPower];
   for (const duration of [140, 120, 160, 120, 220]) {
     h.advance(duration);
@@ -164,7 +164,7 @@ test('photo loading gates the intro and a failed photo skips to WebM', () => {
 
 test('hidden tabs pause every stage, including flicker and repairs', () => {
   const h = setup();
-  for (const [stage, duration] of [['dark', 3000], ['illuminate', 1200], ['photo', 750],
+  for (const [stage, duration] of [['dark', 3000], ['illuminate', 1200], ['photo', 500],
     ['flicker', 1100], ['pause', 500], ['repair', 1200], ['reveal', 2800]]) {
     h.tick(0);
     h.advance(200);

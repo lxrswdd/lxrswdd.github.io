@@ -8,7 +8,7 @@
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const darkDuration = 3000;
   const illuminateDuration = 1200;
-  const photoDuration = 750;
+  const photoDuration = 500;
   const flickerDuration = 1100;
   const pauseDuration = 500;
   const repairDuration = 1200;
